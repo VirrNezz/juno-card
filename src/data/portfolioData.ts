@@ -1,6 +1,6 @@
 import { OCProfile, SocialLink, GalleryItem } from '../types';
-import avatarImg from '../juno-pfp.jpg';
-import fursonaImg from '../juno-pict.png';
+import avatarImg from '../public/juno-pfp.jpg';
+import fursonaImg from '../public/juno-pict.png';
 
 export const PROFILE_INFO = {
   name: 'Juno Queen',
