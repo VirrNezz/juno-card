@@ -1,0 +1,6 @@
+{
+  "name": "Gothic Social & Fursona Portfolio",
+  "description": "A gothic-themed interactive social media portfolio card with nested links, touch gestures, and OC/Fursona showcase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
