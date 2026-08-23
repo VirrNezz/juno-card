@@ -12,8 +12,7 @@ import {
   ListMusic, 
   ChevronUp, 
   ChevronDown, 
-  Sparkles,
-  FolderOpen
+  Sparkles
 } from 'lucide-react';
 import { PLAYLIST, Track } from '../data/musicPlaylist';
 
@@ -147,7 +146,6 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
       setIsPlaying(true);
       if (audioRef.current) {
         audioRef.current.play().catch(() => {
-          // File not in public folder yet, use rich procedural gothic darkwave
           startProceduralSynth(currentTrack);
         });
       } else {
@@ -257,7 +255,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
 
   return (
     <>
-      {/* HTML5 Audio element for custom user files in /public/music/ */}
+      {/* HTML5 Audio element */}
       <audio
         ref={audioRef}
         src={currentTrack.audioUrl}
@@ -269,14 +267,13 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
         }}
         onEnded={handleNextTrack}
         onError={() => {
-          // If audio file doesn't exist yet, fallback smoothly to procedural audio
           if (isPlaying) {
             startProceduralSynth(currentTrack);
           }
         }}
       />
 
-      {/* Floating Gothic Music Player Pill / Bar (Always accessible on top right) */}
+      {/* Floating Juno Playlist Pill / Bar */}
       <div className="fixed top-4 right-4 z-40 flex flex-col items-end">
         {/* Compact Toggle Button */}
         <motion.div
@@ -302,7 +299,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
               {currentTrack.title}
             </div>
             <div className="text-[9px] text-rose-300/70 truncate font-mono">
-              {isPlaying ? currentTrack.artist : 'Gothic Player'}
+              {isPlaying ? currentTrack.artist : 'Juno Playlist'}
             </div>
           </div>
 
@@ -324,7 +321,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
           </div>
         </motion.div>
 
-        {/* Expanded Gothic Player Drawer / Modal */}
+        {/* Expanded Juno Playlist Drawer / Modal */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -339,7 +336,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                 <div className="flex items-center gap-1.5">
                   <Music className="w-4 h-4 text-[#fa0079]" />
                   <span className="text-xs font-bold uppercase tracking-wider font-['Cinzel',serif]">
-                    Gothic Music Player
+                    Juno Playlist
                   </span>
                 </div>
                 <button
@@ -358,8 +355,8 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
 
               {/* Playlist View or Now Playing View */}
               {showPlaylist ? (
-                /* Track List */
-                <div className="py-3 space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                /* Track List (Tanpa teks instruksi .mp3 yang mengganggu) */
+                <div className="py-3 space-y-2 max-h-[240px] overflow-y-auto pr-1">
                   {PLAYLIST.map((t, idx) => {
                     const isSelected = idx === currentTrackIndex;
                     return (
@@ -395,14 +392,6 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                       </div>
                     );
                   })}
-                  
-                  {/* Info notice about /public/music/ folder */}
-                  <div className="p-2.5 rounded-xl bg-[#1a000d] border border-[#710037]/40 text-[10px] text-rose-300/70 flex items-start gap-1.5 mt-2">
-                    <FolderOpen className="w-3.5 h-3.5 text-[#fa0079] shrink-0 mt-0.5" />
-                    <span>
-                      Simpan file <code>.mp3</code> di <code>/public/music/</code> untuk memutar audio kustommu!
-                    </span>
-                  </div>
                 </div>
               ) : (
                 /* Now Playing Art & Meta */
@@ -462,7 +451,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                     </div>
                   </div>
 
-                  {/* Main Playback Controls: Previous, Play/Pause, Next */}
+                  {/* Main Playback Controls */}
                   <div className="w-full flex items-center justify-center gap-4 mt-2">
                     <button
                       id="btn-player-prev"

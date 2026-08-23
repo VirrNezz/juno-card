@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { CardView } from '../types';
 
@@ -7,6 +7,20 @@ interface GothicBackgroundProps {
 }
 
 export const GothicBackground: React.FC<GothicBackgroundProps> = ({ activeView }) => {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  // Deteksi ukuran layar / device saat komponen dimuat atau di-resize
+  useEffect(() => {
+    const checkDevice = () => {
+      // Menggunakanbreakpoint standar mobile (di bawah 768px atau sentuh)
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
   // Generate random drifting ember particles
   const particles = useMemo(() => {
     return Array.from({ length: 24 }).map((_, i) => ({
@@ -21,17 +35,30 @@ export const GothicBackground: React.FC<GothicBackgroundProps> = ({ activeView }
     }));
   }, []);
 
+  // URL Background khusus Desktop dan Mobile/Android/iOS dari client
+  // Silakan ganti path string di bawah dengan nama file gambar asli kiriman client
+  const desktopBgUrl = '/images/juno-bg-desktop.png'; 
+  const mobileBgUrl = '/images/juno-bg-android.png';
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
-      {/* Base gothic dark velvet gradient */}
+      {/* Base background: Otomatis berubah gambar/gradient sesuai device (Desktop vs Mobile) */}
       <div 
-        className="absolute inset-0 transition-all duration-1000 ease-out"
+        className="absolute inset-0 transition-all duration-1000 ease-out bg-cover bg-center"
         style={{
-          background: activeView === 'fursona'
-            ? 'radial-gradient(ellipse at top center, #4a0024 0%, #36001a 30%, #230011 65%, #100007 100%)'
-            : activeView === 'gallery'
-            ? 'radial-gradient(ellipse at bottom left, #5e002d 0%, #36001a 35%, #230011 70%, #0d0006 100%)'
-            : 'radial-gradient(ellipse at top, #36001a 0%, #230011 40%, #15000a 75%, #0d0006 100%)',
+          // Jika client mengirim gambar khusus, aktifkan baris backgroundImage di bawah:
+          // backgroundImage: `url(${isMobile ? mobileBgUrl : desktopBgUrl})`,
+          
+          // Fallback gradient khusus menyesuaikan device & activeView jika gambar belum di-upload:
+          background: isMobile
+            ? (activeView === 'fursona'
+                ? 'radial-gradient(ellipse at top, #36001a 0%, #1a000d 70%, #0a0004 100%)'
+                : 'radial-gradient(ellipse at bottom, #2d0016 0%, #1a000d 60%, #080003 100%)')
+            : (activeView === 'fursona'
+                ? 'radial-gradient(ellipse at top center, #4a0024 0%, #36001a 30%, #230011 65%, #100007 100%)'
+                : activeView === 'gallery'
+                ? 'radial-gradient(ellipse at bottom left, #5e002d 0%, #36001a 35%, #230011 70%, #0d0006 100%)'
+                : 'radial-gradient(ellipse at top, #36001a 0%, #230011 40%, #15000a 75%, #0d0006 100%)'),
         }}
       />
 
