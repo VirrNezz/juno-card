@@ -17,15 +17,15 @@ export interface Track {
 export const PLAYLIST: Track[] = [
   {
     id: 'track-1',
-    title: 'Velvet Nocturne',
-    artist: 'Vespera & The Coven',
-    album: 'Blood Moon Serenade',
+    title: '0_0',
+    artist: 'Ilyhiryu',
+    album: 'Juno Playlist',
     duration: 184,
     coverUrl: '/src/assets/images/gothic_avatar_1787238743712.jpg',
-    audioUrl: '/music/velvet-nocturne.mp3',
+    audioUrl: '/music/0_0.m4a',
     theme: {
       accent: '#fa0079',
-      vibe: 'Darkwave Synth & Ethereal Organ',
+      vibe: 'Phonk, Hardteck, More Adrenaline',
     },
     chords: [110, 164.81, 220, 261.63], // A minor / Phrygian
   },

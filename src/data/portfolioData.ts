@@ -3,8 +3,8 @@ import avatarImg from '/images/juno-pfp.jpg';
 import fursonaImg from '/images/juno-pict.png';
 
 export const PROFILE_INFO = {
-  name: 'Juno Queen',
-  handle: '@juno queen',
+  name: 'Juno Quinn',
+  handle: '@juno quinn',
   role: 'Fursuiters & Furry Artist',
   bio: "Waiting Juno's request for bio hehe",
   location: 'Indonesia',
@@ -12,7 +12,7 @@ export const PROFILE_INFO = {
   statusColor: '#d30066',
   avatar: avatarImg,
   fursonaImage: fursonaImg,
-  badges: ['Gothic Creator', 'Furry Illustrator', 'Vampiric Aesthetic', 'Darkwave Lover'],
+  badges: ['Content Creator', 'Furry Illustrator', 'Furries Dancer', 'Phonk Lover'],
   stats: [
     { label: 'Followers', value: '19M' },
     { label: 'Creations', value: '148+' },
@@ -80,15 +80,15 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const OC_DATA: OCProfile = {
   name: 'Juno Quinn',
   alias: 'Juno / Quinn',
-  title: 'Dancer & Vocal Crew',
-  species: 'Shadow Lupine x Chiroptera Hybrid',
-  archetype: 'Gothic Night Sovereign',
+  title: 'Artist, Performer, Voice Actor',
+  species: 'Wolf Succubus',
+  archetype: 'High Adrenaline On FullMoon',
   pronouns: 'She / They',
   height: "5'9\" (175 cm) / Wingspan: 9ft",
   alignment: 'Chaotic Enigmatic',
   birthday: 'October 31st (Blood Moon)',
   shortBio:
-    'An ancient ethereal soul born from twilight shadows and crimson velvet. She weaves illusions through lunar vibrations and drinks rose-scented tea in abandoned gothic cathedrals.',
+    '',
   lore:
     'Dwelling in the forgotten obsidian towers of the Noctis Realm, Nyx was forged beneath a shattered crimson eclipse. Blessed with both wolf agility and bat acoustics, she wanders between the mortal veil and dreamscapes, protecting lost wanderers who seek beauty in the dark.',
   personality: [
