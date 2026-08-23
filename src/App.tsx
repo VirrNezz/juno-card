@@ -166,11 +166,10 @@ export default function App() {
       <footer className="relative z-10 mt-8 mb-2 text-center text-xs text-rose-400/60 font-mono select-none">
         <div className="flex items-center justify-center gap-1.5 mb-1 text-rose-300/80">
           <span>Crafted with</span>
-          <Heart className="w-3.5 h-3.5 text-[#fa0079] fill-[#fa0079] animate-pulse" />
-          <span>in the Velvet Abyss</span>
+          <span>Dark System Operation</span>
         </div>
         <p className="text-[11px] text-rose-400/50">
-          © {new Date().getFullYear()} Vespera Noctis • All Rights Reserved
+          © {new Date().getFullYear()} Sun3ss 404 Not Found • BlackPaw Teams
         </p>
       </footer>
 
