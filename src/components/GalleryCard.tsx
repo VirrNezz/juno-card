@@ -9,11 +9,8 @@ import {
   Maximize2, 
   Copy, 
   Check, 
-  Sparkles, 
   Image as ImageIcon,
-  FolderOpen,
-  Layers,
-  Share2
+  FolderOpen
 } from 'lucide-react';
 import { GALLERY_PHOTOS } from '../data/portfolioData';
 import { GalleryPhoto } from '../types';
@@ -26,7 +23,6 @@ export const GalleryCard: React.FC<GalleryCardProps> = ({ onShowToast }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [zoomScale, setZoomScale] = useState<number>(1);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
-  const [showCodeTip, setShowCodeTip] = useState<boolean>(false);
 
   const selectedPhoto: GalleryPhoto | null = 
     selectedPhotoIndex !== null ? GALLERY_PHOTOS[selectedPhotoIndex] : null;
@@ -113,48 +109,6 @@ export const GalleryCard: React.FC<GalleryCardProps> = ({ onShowToast }) => {
           <p className="text-xs text-rose-300/80 mt-1 max-w-sm mx-auto">
             Klik foto mana saja untuk memperbesar (Full HD Lightbox) & navigasi gambar.
           </p>
-        </div>
-
-        {/* Quick Helper Toggle: How to add photos with ["png"] code */}
-        <div className="relative z-10 mb-3">
-          <button
-            onClick={() => setShowCodeTip(!showCodeTip)}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#230011]/80 hover:bg-[#36001a] border border-[#710037]/50 text-xs text-rose-200 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <FolderOpen className="w-3.5 h-3.5 text-[#fa0079]" />
-              <span className="font-mono text-[11px]">Cara Tambah Foto dengan Format <code>[&quot;foto.png&quot;]</code></span>
-            </div>
-            <span className="text-[10px] text-[#fa0079] font-bold font-mono">
-              {showCodeTip ? 'Tutup ▲' : 'Lihat Kode ▼'}
-            </span>
-          </button>
-
-          <AnimatePresence>
-            {showCodeTip && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-1.5 p-3 rounded-xl bg-[#120009] border border-[#fa0079]/30 text-[11px] font-mono text-rose-200/90 space-y-1.5"
-              >
-                <div className="text-[#fa0079] font-bold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  <span>Format Kode Mudah di portfolioData.ts:</span>
-                </div>
-                <pre className="p-2 rounded bg-black/60 border border-[#5e002d]/50 text-[10px] text-emerald-300 overflow-x-auto">
-{`export const GALLERY_PHOTOS_RAW = [
-  "/images/foto1.png",
-  "/images/karakter.jpg",
-  "/public/music/cover.png"
-];`}
-                </pre>
-                <p className="text-[10px] text-rose-300/70">
-                  📁 Simpan file gambar Anda di folder <code>/public/images/</code> dan panggil langsung seperti di atas!
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* Gallery Photos Grid */}

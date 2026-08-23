@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Sparkles, 
-  Shield, 
-  Zap, 
   Moon, 
   Flame, 
-  Eye, 
+  Zap, 
   Feather,
   ChevronDown,
   ChevronUp,
@@ -58,7 +56,8 @@ export const FursonaCard: React.FC<FursonaCardProps> = ({ onShowToast, onNavigat
 
         {/* Hero Character Portrait & Badges */}
         <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="relative group w-full max-w-[280px] sm:max-w-[320px] aspect-[4/3] rounded-2xl p-[2px] bg-gradient-to-tr from-[#fa0079] via-[#850040] to-[#230011] shadow-[0_8px_30px_rgba(250,0,121,0.25)] overflow-hidden">
+          {/* Ukuran & Rasio Gambar disesuaikan agar rapi dan proporsional */}
+          <div className="relative group w-full max-w-[220px] sm:max-w-[250px] aspect-[3/4] rounded-2xl p-[2px] bg-gradient-to-tr from-[#fa0079] via-[#850040] to-[#230011] shadow-[0_8px_30px_rgba(250,0,121,0.25)] overflow-hidden">
             <div className="w-full h-full rounded-2xl overflow-hidden relative bg-[#120009]">
               <img
                 src={PROFILE_INFO.fursonaImage}
@@ -83,7 +82,7 @@ export const FursonaCard: React.FC<FursonaCardProps> = ({ onShowToast, onNavigat
           </div>
 
           {/* Fursona Name & Species */}
-          <div className="mt-4">
+          <div className="mt-3.5">
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-wider font-['Cinzel',serif] text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-[#fa0079]">
               {OC_DATA.name}
             </h2>
