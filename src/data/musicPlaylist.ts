@@ -21,7 +21,7 @@ export const PLAYLIST: Track[] = [
     artist: 'Ilyhiryu',
     album: 'Juno Playlist',
     duration: 184,
-    coverUrl: '/src/assets/images/gothic_avatar_1787238743712.jpg',
+    coverUrl: '/images/juno-song-cover-1.jfif',
     audioUrl: '/music/0_0.m4a',
     theme: {
       accent: '#fa0079',
