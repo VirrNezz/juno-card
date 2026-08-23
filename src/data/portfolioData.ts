@@ -150,14 +150,14 @@ export const OC_DATA: OCProfile = {
  */
 export const GALLERY_PHOTOS_RAW: GalleryInput[] = [
   {
-    url:/images/juno-pict.png,
+    url:'/images/juno-pict.png',
     title: 'Juno Photo',
     artist: '@juno.quinn_',
     caption: 'Full body Chiroptera reference sheet with glowing crimson markings.',
     tags: ['Fursona', 'Ref Sheet', 'PNG'],
   },
   {
-    url:/images/juno-pfp.jpg,
+    url:'/images/juno-pfp.jpg',
     title: 'Juno Photo Profile',
     artist: '@juno.quinn_',
     caption: 'Velvet portrait in the midnight coven chamber.',
