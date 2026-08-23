@@ -23,7 +23,7 @@ interface GothicMusicPlayerProps {
 export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToast }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showPlaylist, setShowPlaylist] = useState<boolean>(false);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(PLAYLIST[0].duration);
@@ -36,7 +36,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
   const oscNodesRef = useRef<OscillatorNode[]>([]);
   const synthTimerRef = useRef<any>(null);
 
-  const currentTrack: Track = PLAYLIST[currentTrackIndex] || PLAYLIST[0];
+  const currentSong: Track = PLAYLIST[currentSongIndex] || PLAYLIST[0];
 
   // Stop procedural synth
   const stopProceduralSynth = useCallback(() => {
@@ -58,7 +58,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
   }, []);
 
   // Play procedural gothic synth fallback
-  const startProceduralSynth = useCallback((track: Track) => {
+  const startProceduralSynth = useCallback((song: Track) => {
     try {
       stopProceduralSynth();
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -76,7 +76,7 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
       masterGain.connect(ctx.destination);
       masterGainRef.current = masterGain;
 
-      const chords = track.chords || [110, 164.81, 220, 261.63];
+      const chords = song.chords || [110, 164.81, 220, 261.63];
       const oscs: OscillatorNode[] = [];
 
       chords.forEach((freq, idx) => {
@@ -119,11 +119,11 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
 
       oscNodesRef.current = oscs;
 
-      // Track progress timer simulation
+      // Song progress timer simulation
       synthTimerRef.current = setInterval(() => {
         setCurrentTime((prev) => {
-          if (prev >= track.duration) {
-            handleNextTrack();
+          if (prev >= song.duration) {
+            handleNextSong();
             return 0;
           }
           return prev + 1;
@@ -146,18 +146,18 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
       setIsPlaying(true);
       if (audioRef.current) {
         audioRef.current.play().catch(() => {
-          startProceduralSynth(currentTrack);
+          startProceduralSynth(currentSong);
         });
       } else {
-        startProceduralSynth(currentTrack);
+        startProceduralSynth(currentSong);
       }
-      if (onShowToast) onShowToast(`🎵 Now Playing: ${currentTrack.title}`);
+      if (onShowToast) onShowToast(`🎵 Now Playing: ${currentSong.title}`);
     }
   };
 
-  const handleNextTrack = useCallback(() => {
-    const nextIndex = (currentTrackIndex + 1) % PLAYLIST.length;
-    setCurrentTrackIndex(nextIndex);
+  const handleNextSong = useCallback(() => {
+    const nextIndex = (currentSongIndex + 1) % PLAYLIST.length;
+    setCurrentSongIndex(nextIndex);
     setCurrentTime(0);
     setDuration(PLAYLIST[nextIndex].duration);
     if (isPlaying) {
@@ -172,11 +172,11 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
         }
       }, 50);
     }
-  }, [currentTrackIndex, isPlaying, startProceduralSynth]);
+  }, [currentSongIndex, isPlaying, startProceduralSynth]);
 
-  const handlePrevTrack = () => {
-    const prevIndex = (currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
-    setCurrentTrackIndex(prevIndex);
+  const handlePrevSong = () => {
+    const prevIndex = (currentSongIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
+    setCurrentSongIndex(prevIndex);
     setCurrentTime(0);
     setDuration(PLAYLIST[prevIndex].duration);
     if (isPlaying) {
@@ -193,8 +193,8 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
     }
   };
 
-  const selectTrack = (index: number) => {
-    setCurrentTrackIndex(index);
+  const selectSong = (index: number) => {
+    setCurrentSongIndex(index);
     setCurrentTime(0);
     setDuration(PLAYLIST[index].duration);
     setIsPlaying(true);
@@ -258,17 +258,17 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
       {/* HTML5 Audio element */}
       <audio
         ref={audioRef}
-        src={currentTrack.audioUrl}
+        src={currentSong.audioUrl}
         onTimeUpdate={() => {
           if (audioRef.current) {
             setCurrentTime(audioRef.current.currentTime);
-            setDuration(audioRef.current.duration || currentTrack.duration);
+            setDuration(audioRef.current.duration || currentSong.duration);
           }
         }}
-        onEnded={handleNextTrack}
+        onEnded={handleNextSong}
         onError={() => {
           if (isPlaying) {
-            startProceduralSynth(currentTrack);
+            startProceduralSynth(currentSong);
           }
         }}
       />
@@ -292,14 +292,14 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
             <Disc className="w-4 h-4" />
           </div>
 
-          {/* Track Name marquee text */}
+          {/* Song Name marquee text */}
           <div className="max-w-[90px] sm:max-w-[140px] truncate text-left pr-1">
             <div className="text-[11px] font-bold text-rose-100 truncate flex items-center gap-1 font-['Cinzel',serif]">
               {isPlaying && <span className="w-1.5 h-1.5 rounded-full bg-[#fa0079] animate-ping" />}
-              {currentTrack.title}
+              {currentSong.title}
             </div>
             <div className="text-[9px] text-rose-300/70 truncate font-mono">
-              {isPlaying ? currentTrack.artist : 'Juno Playlist'}
+              {isPlaying ? currentSong.artist : 'Juno Playlist'}
             </div>
           </div>
 
@@ -349,20 +349,20 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                   }`}
                 >
                   <ListMusic className="w-3 h-3" />
-                  <span>Tracks ({PLAYLIST.length})</span>
+                  <span>Songs ({PLAYLIST.length})</span>
                 </button>
               </div>
 
               {/* Playlist View or Now Playing View */}
               {showPlaylist ? (
-                /* Track List (Tanpa teks instruksi .mp3 yang mengganggu) */
+                /* Song List (Jumlah track/song otomatis terhitung lewat PLAYLIST.length) */
                 <div className="py-3 space-y-2 max-h-[240px] overflow-y-auto pr-1">
-                  {PLAYLIST.map((t, idx) => {
-                    const isSelected = idx === currentTrackIndex;
+                  {PLAYLIST.map((s, idx) => {
+                    const isSelected = idx === currentSongIndex;
                     return (
                       <div
-                        key={t.id}
-                        onClick={() => selectTrack(idx)}
+                        key={s.id}
+                        onClick={() => selectSong(idx)}
                         className={`flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all ${
                           isSelected
                             ? 'bg-gradient-to-r from-[#850040] to-[#fa0079]/40 border border-[#fa0079] text-white'
@@ -375,10 +375,10 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                           </span>
                           <div className="min-w-0">
                             <div className="text-xs font-bold truncate font-['Cinzel',serif]">
-                              {t.title}
+                              {s.title}
                             </div>
                             <div className="text-[10px] text-rose-300/70 truncate">
-                              {t.artist}
+                              {s.artist}
                             </div>
                           </div>
                         </div>
@@ -404,8 +404,8 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                       }`}
                     >
                       <img
-                        src={currentTrack.coverUrl}
-                        alt={currentTrack.title}
+                        src={currentSong.coverUrl}
+                        alt={currentSong.title}
                         className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
@@ -418,15 +418,15 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                     )}
                   </div>
 
-                  {/* Track Titles */}
+                  {/* Song Titles */}
                   <h3 className="mt-2 text-sm font-extrabold font-['Cinzel',serif] text-rose-100 tracking-wide">
-                    {currentTrack.title}
+                    {currentSong.title}
                   </h3>
                   <p className="text-xs text-[#e7006f] font-mono mt-0.5">
-                    {currentTrack.artist}
+                    {currentSong.artist}
                   </p>
                   <span className="text-[10px] text-rose-300/60 font-mono mt-0.5">
-                    {currentTrack.theme.vibe}
+                    {currentSong.theme.vibe}
                   </span>
 
                   {/* Progress Slider */}
@@ -455,8 +455,8 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
                   <div className="w-full flex items-center justify-center gap-4 mt-2">
                     <button
                       id="btn-player-prev"
-                      onClick={handlePrevTrack}
-                      title="Previous Track"
+                      onClick={handlePrevSong}
+                      title="Previous Song"
                       className="p-2 rounded-full bg-[#230011] hover:bg-[#36001a] text-rose-200 hover:text-white border border-[#710037]/50 active:scale-95 transition-all"
                     >
                       <SkipBack className="w-4 h-4 fill-current" />
@@ -477,8 +477,8 @@ export const GothicMusicPlayer: React.FC<GothicMusicPlayerProps> = ({ onShowToas
 
                     <button
                       id="btn-player-next"
-                      onClick={handleNextTrack}
-                      title="Next Track"
+                      onClick={handleNextSong}
+                      title="Next Song"
                       className="p-2 rounded-full bg-[#230011] hover:bg-[#36001a] text-rose-200 hover:text-white border border-[#710037]/50 active:scale-95 transition-all"
                     >
                       <SkipForward className="w-4 h-4 fill-current" />
