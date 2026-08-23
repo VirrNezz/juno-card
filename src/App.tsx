@@ -6,7 +6,7 @@ import { SocialCard } from './components/SocialCard';
 import { FursonaCard } from './components/FursonaCard';
 import { GalleryCard } from './components/GalleryCard';
 import { NavigationControls } from './components/NavigationControls';
-import { AudioAmbience } from './components/AudioAmbience';
+import { GothicMusicPlayer } from './components/GothicMusicPlayer';
 import { Toast } from './components/Toast';
 import { Sparkles, Moon, Github, Heart } from 'lucide-react';
 
@@ -93,8 +93,8 @@ export default function App() {
       {/* Dynamic Animated Gothic Canvas & Ambient Lighting */}
       <GothicBackground activeView={activeView} />
 
-      {/* Ambience Audio Synthesizer */}
-      <AudioAmbience />
+      {/* Gothic Music Player with Volume, Pause/Play, Track Selection & Public Folder Audio */}
+      <GothicMusicPlayer onShowToast={showToast} />
 
       {/* Main Content Area */}
       <div className="relative z-10 w-full max-w-lg sm:max-w-xl mx-auto flex flex-col items-center">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, User, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, User, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { CardView } from '../types';
 
 interface NavigationControlsProps {
@@ -18,6 +18,7 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
   const views: { id: CardView; label: string; icon: any }[] = [
     { id: 'social', label: 'Social Profile', icon: User },
     { id: 'fursona', label: 'OC / Fursona', icon: Sparkles },
+    { id: 'gallery', label: 'Art Gallery', icon: ImageIcon },
   ];
 
   return (

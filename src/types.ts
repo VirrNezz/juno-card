@@ -50,11 +50,14 @@ export interface OCProfile {
   referenceNotes: string[];
 }
 
-export interface GalleryItem {
+export interface GalleryPhoto {
   id: string;
-  title: string;
-  artist: string;
-  type: 'reference' | 'portrait' | 'illustration' | 'aesthetic';
-  imageUrl: string;
-  tags: string[];
+  title?: string;
+  artist?: string;
+  url: string; // direct path like /images/art.png, asset import, or URL
+  caption?: string;
+  tags?: string[];
 }
+
+// Support both simple string list like ["/images/art1.png", "/images/art2.jpg"] and objects
+export type GalleryInput = string | GalleryPhoto;

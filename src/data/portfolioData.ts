@@ -1,12 +1,12 @@
-import { OCProfile, SocialLink, GalleryItem } from '../types';
-import avatarImg from '../public/juno-pfp.jpg';
-import fursonaImg from '../public/juno-pict.png';
+import { OCProfile, SocialLink, GalleryPhoto, GalleryInput } from '../types';
+import avatarImg from '/images/juno-pfp.jpg';
+import fursonaImg from '/images/juno-pict.png';
 
 export const PROFILE_INFO = {
-  name: 'Juno Queen',
-  handle: '@Juno Queen',
-  role: 'Furry Artist & Furry Creator',
-  bio: 'hehe',
+  name: 'Vespera Noctis',
+  handle: '@vespera.goth',
+  role: 'Gothic Digital Artist & Furry Creator',
+  bio: 'Dwelling in the crimson mist. Illustrating dark fantasies, gothic fursonas & velvet dreams. 🦇✨',
   location: 'Elysium / Shadow Realm',
   status: 'Commissions Open (2/5 slots)',
   statusColor: '#d30066',
@@ -157,37 +157,92 @@ export const OC_DATA: OCProfile = {
   ],
 };
 
-export const GALLERY_ITEMS: GalleryItem[] = [
+/**
+ * ══════════════════════════════════════════════════════════════════════════════════
+ * 📸 ART & PHOTO GALLERY LIST
+ * ══════════════════════════════════════════════════════════════════════════════════
+ * CARA MENAMBAH FOTO BARU:
+ * Anda bisa langsung memasukkan path foto (PNG, JPG, WEBP) dalam bentuk string:
+ * 
+ * Contoh:
+ *   "/images/my_photo.png",
+ *   "/images/fanart.jpg",
+ *   "https://images.unsplash.com/...png"
+ * 
+ * Atau dalam format objek lengkap:
+ *   { url: "/images/custom.png", title: "Midnight Bat", artist: "@vespera" }
+ * ══════════════════════════════════════════════════════════════════════════════════
+ */
+export const GALLERY_PHOTOS_RAW: GalleryInput[] = [
   {
-    id: 'art-1',
-    title: 'Nocturnal Sovereign - Official Reference',
+    id: 'photo-1',
+    title: 'Nocturnal Sovereign - Official Fursona',
     artist: '@vespera.goth',
-    type: 'reference',
-    imageUrl: fursonaImg,
-    tags: ['Fursona', 'Ref Sheet', 'Full Body'],
+    url: fursonaImg,
+    caption: 'Full body Chiroptera reference sheet with glowing crimson markings.',
+    tags: ['Fursona', 'Ref Sheet', 'PNG'],
   },
   {
-    id: 'art-2',
+    id: 'photo-2',
     title: 'Gothic Vampire Silhouette',
     artist: '@vespera.goth',
-    type: 'portrait',
-    imageUrl: avatarImg,
+    url: avatarImg,
+    caption: 'Velvet portrait in the midnight coven chamber.',
     tags: ['Avatar', 'Gothic', 'Portrait'],
   },
   {
-    id: 'art-3',
-    title: 'Midnight Velvet Coven Vibe',
-    artist: 'Guest Artist Collab',
-    type: 'aesthetic',
-    imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
-    tags: ['Atmosphere', 'Cathedral', 'Crimson'],
+    id: 'photo-3',
+    title: 'Crimson Rose in Dark Velvet',
+    artist: 'Atmospheric Art',
+    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+    caption: 'Enchanted black rose glistening under the blood moon.',
+    tags: ['Rose', 'Atmosphere', 'PNG'],
   },
   {
-    id: 'art-4',
-    title: 'Ethereal Rose & Thorns',
+    id: 'photo-4',
+    title: 'Cathedral Shadows & Obsidian Arch',
+    artist: 'Gothic Architecture',
+    url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
+    caption: 'Ancient ruins lit by eerie celestial magenta lanterns.',
+    tags: ['Cathedral', 'Aesthetic'],
+  },
+  {
+    id: 'photo-5',
+    title: 'Midnight Fog in Crimson Woods',
+    artist: 'Darkwave Aesthetic',
+    url: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1200&q=80',
+    caption: 'The twilight path leading deeper into Noctis Sanctuary.',
+    tags: ['Forest', 'Darkness'],
+  },
+  {
+    id: 'photo-6',
+    title: 'Vampiric Crystal & Thorns',
     artist: '@vespera.goth',
-    type: 'illustration',
-    imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
-    tags: ['Botanical', 'Dark Rose', 'Neon'],
+    url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80',
+    caption: 'Glowing dark crystals harboring shadow magic.',
+    tags: ['Crystal', 'Magic'],
   },
 ];
+
+// Helper to normalize strings or objects into GalleryPhoto format
+export const GALLERY_PHOTOS: GalleryPhoto[] = GALLERY_PHOTOS_RAW.map((item, index) => {
+  if (typeof item === 'string') {
+    // Generate clean title from filename
+    const filename = item.split('/').pop()?.split('.')[0]?.replace(/[-_]/g, ' ') || `Photo ${index + 1}`;
+    const capitalizedTitle = filename.charAt(0).toUpperCase() + filename.slice(1);
+    return {
+      id: `photo-item-${index + 1}`,
+      title: capitalizedTitle,
+      artist: '@vespera.goth',
+      url: item,
+      caption: `Art piece from /public/images/ (${item})`,
+      tags: ['Gallery', item.endsWith('.png') ? 'PNG' : 'Photo'],
+    };
+  }
+  return {
+    ...item,
+    id: item.id || `photo-item-${index + 1}`,
+    title: item.title || `Photo ${index + 1}`,
+    artist: item.artist || '@vespera.goth',
+  };
+});

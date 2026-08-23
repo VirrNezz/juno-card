@@ -1,25 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Sparkles, 
-  ExternalLink, 
-  Tag, 
   X, 
-  Palette, 
-  Clock, 
-  ShieldCheck, 
-  Coins, 
-  Image as ImageIcon 
+  ChevronLeft, 
+  ChevronRight, 
+  ZoomIn, 
+  ZoomOut, 
+  Maximize2, 
+  Copy, 
+  Check, 
+  Sparkles, 
+  Image as ImageIcon,
+  FolderOpen,
+  Layers,
+  Share2
 } from 'lucide-react';
-import { GALLERY_ITEMS } from '../data/portfolioData';
-import { GalleryItem } from '../types';
+import { GALLERY_PHOTOS } from '../data/portfolioData';
+import { GalleryPhoto } from '../types';
 
 interface GalleryCardProps {
   onShowToast: (msg: string) => void;
 }
 
 export const GalleryCard: React.FC<GalleryCardProps> = ({ onShowToast }) => {
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [zoomScale, setZoomScale] = useState<number>(1);
+  const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
+  const [showCodeTip, setShowCodeTip] = useState<boolean>(false);
+
+  const selectedPhoto: GalleryPhoto | null = 
+    selectedPhotoIndex !== null ? GALLERY_PHOTOS[selectedPhotoIndex] : null;
+
+  const handleOpenPhoto = (index: number) => {
+    setSelectedPhotoIndex(index);
+    setZoomScale(1);
+    setCopiedUrl(false);
+  };
+
+  const handleCloseLightbox = () => {
+    setSelectedPhotoIndex(null);
+    setZoomScale(1);
+  };
+
+  const handlePrevPhoto = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    const prev = (selectedPhotoIndex - 1 + GALLERY_PHOTOS.length) % GALLERY_PHOTOS.length;
+    setSelectedPhotoIndex(prev);
+    setZoomScale(1);
+    setCopiedUrl(false);
+  }, [selectedPhotoIndex]);
+
+  const handleNextPhoto = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    const next = (selectedPhotoIndex + 1) % GALLERY_PHOTOS.length;
+    setSelectedPhotoIndex(next);
+    setZoomScale(1);
+    setCopiedUrl(false);
+  }, [selectedPhotoIndex]);
+
+  const toggleZoom = () => {
+    setZoomScale((prev) => (prev === 1 ? 1.6 : prev === 1.6 ? 2.2 : 1));
+  };
+
+  const handleCopyLink = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedUrl(true);
+    onShowToast('🔗 Image link copied to clipboard!');
+    setTimeout(() => setCopiedUrl(false), 2000);
+  };
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedPhotoIndex === null) return;
+      if (e.key === 'Escape') {
+        handleCloseLightbox();
+      } else if (e.key === 'ArrowRight') {
+        handleNextPhoto();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevPhoto();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPhotoIndex, handleNextPhoto, handlePrevPhoto]);
 
   return (
     <div className="w-full max-w-[480px] sm:max-w-[540px] mx-auto">
@@ -38,138 +102,221 @@ export const GalleryCard: React.FC<GalleryCardProps> = ({ onShowToast }) => {
         {/* Gallery Header */}
         <div className="relative z-10 text-center mb-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-[#850040]/50 border border-[#fa0079]/40 text-rose-100 mb-2">
-            <Palette className="w-3 h-3 text-[#fa0079]" />
-            <span>Art Showcase & Commissions</span>
+            <ImageIcon className="w-3.5 h-3.5 text-[#fa0079]" />
+            <span>Photo & Art Showcase</span>
+            <span className="text-[#fa0079] font-bold">({GALLERY_PHOTOS.length} items)</span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-wider font-['Cinzel',serif] text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-[#fa0079]">
             Velvet Gallery
           </h2>
           <p className="text-xs text-rose-300/80 mt-1 max-w-sm mx-auto">
-            Selected gothic pieces, OC character concepts, and commission status.
+            Klik foto mana saja untuk memperbesar (Full HD Lightbox) & navigasi gambar.
           </p>
         </div>
 
-        {/* Commission Status Banner */}
-        <div className="relative z-10 p-3.5 rounded-2xl bg-gradient-to-r from-[#36001a] via-[#4a0024] to-[#230011] border border-[#fa0079]/40 shadow-inner mb-4">
-          <div className="flex items-center justify-between gap-2">
+        {/* Quick Helper Toggle: How to add photos with ["png"] code */}
+        <div className="relative z-10 mb-3">
+          <button
+            onClick={() => setShowCodeTip(!showCodeTip)}
+            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#230011]/80 hover:bg-[#36001a] border border-[#710037]/50 text-xs text-rose-200 transition-colors"
+          >
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#fa0079] animate-ping" />
-              <span className="text-xs sm:text-sm font-bold text-rose-100">
-                Commissions: <span className="text-[#fa0079]">OPEN</span>
-              </span>
+              <FolderOpen className="w-3.5 h-3.5 text-[#fa0079]" />
+              <span className="font-mono text-[11px]">Cara Tambah Foto dengan Format <code>[&quot;foto.png&quot;]</code></span>
             </div>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#fa0079]/20 text-[#fa0079] border border-[#fa0079]/30">
-              2 / 5 Slots
+            <span className="text-[10px] text-[#fa0079] font-bold font-mono">
+              {showCodeTip ? 'Tutup ▲' : 'Lihat Kode ▼'}
             </span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 mt-2.5 pt-2 border-t border-[#5e002d]/40 text-center text-[11px]">
-            <div>
-              <span className="text-rose-400/70 block">Icons / Head</span>
-              <span className="font-bold text-rose-100 font-mono">$35+</span>
-            </div>
-            <div>
-              <span className="text-rose-400/70 block">Half-Body</span>
-              <span className="font-bold text-rose-100 font-mono">$65+</span>
-            </div>
-            <div>
-              <span className="text-rose-400/70 block">Full Ref Sheet</span>
-              <span className="font-bold text-rose-100 font-mono">$120+</span>
-            </div>
-          </div>
+          </button>
+
+          <AnimatePresence>
+            {showCodeTip && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden mt-1.5 p-3 rounded-xl bg-[#120009] border border-[#fa0079]/30 text-[11px] font-mono text-rose-200/90 space-y-1.5"
+              >
+                <div className="text-[#fa0079] font-bold flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Format Kode Mudah di portfolioData.ts:</span>
+                </div>
+                <pre className="p-2 rounded bg-black/60 border border-[#5e002d]/50 text-[10px] text-emerald-300 overflow-x-auto">
+{`export const GALLERY_PHOTOS_RAW = [
+  "/images/foto1.png",
+  "/images/karakter.jpg",
+  "/public/music/cover.png"
+];`}
+                </pre>
+                <p className="text-[10px] text-rose-300/70">
+                  📁 Simpan file gambar Anda di folder <code>/public/images/</code> dan panggil langsung seperti di atas!
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="relative z-10 grid grid-cols-2 gap-2.5 sm:gap-3">
-          {GALLERY_ITEMS.map((item) => (
+        {/* Gallery Photos Grid */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          {GALLERY_PHOTOS.map((photo, idx) => (
             <motion.div
-              key={item.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedItem(item)}
-              className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-[#120009] border border-[#710037]/50 hover:border-[#fa0079] transition-all cursor-pointer shadow-md"
+              key={photo.id}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => handleOpenPhoto(idx)}
+              className="group relative rounded-2xl overflow-hidden aspect-square bg-[#120009] border border-[#710037]/60 hover:border-[#fa0079] transition-all cursor-pointer shadow-md hover:shadow-[0_0_20px_rgba(250,0,121,0.35)]"
             >
               <img
-                src={item.imageUrl}
-                alt={item.title}
+                src={photo.url}
+                alt={photo.title || `Photo ${idx + 1}`}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                onError={(e) => {
+                  // Fallback placeholder if custom image path not found yet
+                  (e.target as HTMLElement).setAttribute('src', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80');
+                }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#120009] via-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+              {/* Subtle dark gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#120009] via-black/20 to-transparent opacity-70 group-hover:opacity-40 transition-opacity" />
               
-              <div className="absolute bottom-2 left-2 right-2">
-                <span className="text-[11px] font-bold text-rose-100 block truncate font-['Cinzel',serif]">
-                  {item.title}
-                </span>
-                <span className="text-[10px] text-[#fa0079] font-mono block truncate">
-                  {item.artist}
-                </span>
+              {/* Hover Zoom Icon & Title */}
+              <div className="absolute inset-0 flex flex-col justify-between p-2 pointer-events-none">
+                <div className="self-end p-1.5 rounded-full bg-black/60 text-[#fa0079] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Maximize2 className="w-3 h-3" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-rose-100 block truncate font-['Cinzel',serif]">
+                    {photo.title}
+                  </span>
+                  <span className="text-[9px] text-[#fa0079] font-mono block truncate">
+                    {photo.artist || '@vespera'}
+                  </span>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
-
-        {/* Order on VGen / External Link */}
-        <div className="relative z-10 mt-5 pt-4 border-t border-[#5e002d]/40">
-          <a
-            href="https://vgen.co/vespera"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-3 px-4 rounded-xl font-['Cinzel',serif] text-xs font-bold tracking-wider uppercase text-white bg-gradient-to-r from-[#850040] via-[#c0005c] to-[#fa0079] hover:from-[#980049] hover:to-[#fa0079] border border-[#fa0079]/50 shadow-[0_0_20px_rgba(250,0,121,0.4)] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          >
-            <span>Request Custom Commission on VGen</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
       </div>
 
-      {/* Lightbox / Modal for Art Item Preview */}
+      {/* Lightbox / Modal for Photo Zoom & Enlarge */}
       <AnimatePresence>
-        {selectedItem && (
+        {selectedPhoto && selectedPhotoIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setSelectedItem(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+            onClick={handleCloseLightbox}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-lg select-none"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.9, y: 15 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              exit={{ scale: 0.9, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-md w-full rounded-3xl bg-[#230011] border border-[#fa0079]/60 p-4 shadow-2xl overflow-hidden"
+              className="relative max-w-2xl w-full rounded-3xl bg-[#1e000e] border border-[#fa0079]/50 p-4 sm:p-5 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(250,0,121,0.3)] overflow-hidden flex flex-col"
             >
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/60 text-white hover:bg-[#fa0079] transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              {/* Lightbox Header Bar */}
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#5e002d]/50">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#fa0079]/20 text-[#fa0079] border border-[#fa0079]/30">
+                    {selectedPhotoIndex + 1} / {GALLERY_PHOTOS.length}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-bold font-['Cinzel',serif] text-rose-100 truncate max-w-[180px] sm:max-w-xs">
+                      {selectedPhoto.title}
+                    </h3>
+                  </div>
+                </div>
 
-              <div className="rounded-2xl overflow-hidden max-h-[60vh] bg-black">
-                <img
-                  src={selectedItem.imageUrl}
-                  alt={selectedItem.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-auto object-contain mx-auto"
-                />
+                {/* Header Action Buttons */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={toggleZoom}
+                    title={zoomScale > 1 ? 'Reset Zoom' : 'Zoom In'}
+                    className="p-2 rounded-full bg-[#230011] hover:bg-[#36001a] text-rose-200 hover:text-white border border-[#710037]/50 transition-colors"
+                  >
+                    {zoomScale > 1 ? <ZoomOut className="w-4 h-4 text-[#fa0079]" /> : <ZoomIn className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => handleCopyLink(selectedPhoto.url)}
+                    title="Copy Photo Link"
+                    className="p-2 rounded-full bg-[#230011] hover:bg-[#36001a] text-rose-200 hover:text-white border border-[#710037]/50 transition-colors"
+                  >
+                    {copiedUrl ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={handleCloseLightbox}
+                    title="Close (Esc)"
+                    className="p-2 rounded-full bg-[#fa0079] text-white hover:bg-[#c0005c] transition-colors ml-1 shadow-md"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              <div className="mt-3">
-                <h3 className="text-base font-bold text-white font-['Cinzel',serif]">
-                  {selectedItem.title}
-                </h3>
-                <p className="text-xs text-[#fa0079] font-mono mt-0.5">
-                  Artist: {selectedItem.artist}
-                </p>
+              {/* Main Photo Enlarged Display Area */}
+              <div className="relative w-full rounded-2xl overflow-hidden bg-black/70 flex items-center justify-center min-h-[260px] max-h-[65vh] border border-[#5e002d]/40">
+                <div 
+                  className="w-full h-full flex items-center justify-center overflow-auto p-2 cursor-zoom-in"
+                  onClick={toggleZoom}
+                >
+                  <motion.img
+                    src={selectedPhoto.url}
+                    alt={selectedPhoto.title}
+                    referrerPolicy="no-referrer"
+                    animate={{ scale: zoomScale }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-2xl transition-transform select-none"
+                  />
+                </div>
 
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {selectedItem.tags.map((t, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded text-[10px] bg-[#36001a] text-rose-200 border border-[#710037]">
-                      #{t}
-                    </span>
-                  ))}
+                {/* Left/Prev Arrow Button */}
+                <button
+                  onClick={handlePrevPhoto}
+                  title="Previous Photo (Left Arrow)"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#fa0079] text-white backdrop-blur-md transition-all active:scale-95 shadow-lg border border-white/10"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Right/Next Arrow Button */}
+                <button
+                  onClick={handleNextPhoto}
+                  title="Next Photo (Right Arrow)"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#fa0079] text-white backdrop-blur-md transition-all active:scale-95 shadow-lg border border-white/10"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Photo Meta & Caption */}
+              <div className="mt-3 pt-2 border-t border-[#5e002d]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div>
+                  <span className="font-bold text-rose-100 font-['Cinzel',serif] block">
+                    {selectedPhoto.title}
+                  </span>
+                  {selectedPhoto.caption && (
+                    <p className="text-[11px] text-rose-300/80 mt-0.5">
+                      {selectedPhoto.caption}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-mono text-[#fa0079]">
+                    {selectedPhoto.artist || '@vespera.goth'}
+                  </span>
+                  {selectedPhoto.tags && (
+                    <div className="flex items-center gap-1">
+                      {selectedPhoto.tags.map((t, i) => (
+                        <span key={i} className="px-2 py-0.5 rounded text-[9px] font-mono bg-[#36001a] text-rose-300 border border-[#710037]/50">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
