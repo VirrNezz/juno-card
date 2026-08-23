@@ -43,18 +43,4 @@ export const PLAYLIST: Track[] = [
     },
     chords: [98, 146.83, 196, 246.94], // G minor / Aeolian
   },
-  {
-    id: 'track-3',
-    title: 'Echoes of the Blood Moon',
-    artist: 'Vespera Noctis',
-    album: 'Lunar Eclipse EP',
-    duration: 162,
-    coverUrl: '/src/assets/images/gothic_fursona_1787238760248.jpg',
-    audioUrl: '/music/echoes-of-blood-moon.mp3',
-    theme: {
-      accent: '#e7006f',
-      vibe: 'Nocturnal Ambient Dream',
-    },
-    chords: [130.81, 196, 261.63, 311.13], // C minor / Ethereal
-  },
 ];
