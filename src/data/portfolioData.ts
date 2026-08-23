@@ -87,10 +87,8 @@ export const OC_DATA: OCProfile = {
   height: "5'9\" (175 cm) / Wingspan: 9ft",
   alignment: 'Chaotic Enigmatic',
   birthday: 'October 31st (Blood Moon)',
-  shortBio:
-    '',
-  lore:
-    'Dwelling in the forgotten obsidian towers of the Noctis Realm, Nyx was forged beneath a shattered crimson eclipse. Blessed with both wolf agility and bat acoustics, she wanders between the mortal veil and dreamscapes, protecting lost wanderers who seek beauty in the dark.',
+  shortBio: '',
+  lore: 'Dwelling in the forgotten obsidian towers of the Noctis Realm, Nyx was forged beneath a shattered crimson eclipse. Blessed with both wolf agility and bat acoustics, she wanders between the mortal veil and dreamscapes, protecting lost wanderers who seek beauty in the dark.',
   personality: [
     'Mysterious & Elegant',
     'Deeply Loyal to Coven',
@@ -147,83 +145,44 @@ export const OC_DATA: OCProfile = {
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════════
- * 📸 ART & PHOTO GALLERY LIST
- * ══════════════════════════════════════════════════════════════════════════════════
- * CARA MENAMBAH FOTO BARU:
- * Anda bisa langsung memasukkan path foto (PNG, JPG, WEBP) dalam bentuk string:
- * 
- * Contoh:
- *   "/images/my_photo.png",
- *   "/images/fanart.jpg",
- *   "https://images.unsplash.com/...png"
- * 
- * Atau dalam format objek lengkap:
- *   { url: "/images/custom.png", title: "Midnight Bat", artist: "@vespera" }
+ * 📸 ART & PHOTO GALLERY LIST (ISI 2 FOTO DENGAN JUDUL TERPISAH)
  * ══════════════════════════════════════════════════════════════════════════════════
  */
 export const GALLERY_PHOTOS_RAW: GalleryInput[] = [
   {
-    id: 'photo-1',
-    title: 'Nocturnal Sovereign - Official Fursona',
-    artist: '@vespera.goth',
-    url: fursonaImg,
+    url: /images/juno-pict.png,
+    title: 'Juno Photo',
+    artist: '@juno.quinn_',
     caption: 'Full body Chiroptera reference sheet with glowing crimson markings.',
     tags: ['Fursona', 'Ref Sheet', 'PNG'],
   },
   {
-    id: 'photo-2',
-    title: 'Gothic Vampire Silhouette',
-    artist: '@vespera.goth',
-    url: avatarImg,
+    url: /images/juno-pfp.jpg,
+    title: 'Juno Photo Profile',
+    artist: '@juno.quinn_',
     caption: 'Velvet portrait in the midnight coven chamber.',
     tags: ['Avatar', 'Gothic', 'Portrait'],
-  },
-  {
-    id: 'photo-3',
-    title: 'Crimson Rose in Dark Velvet',
-    artist: 'Atmospheric Art',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    caption: 'Enchanted black rose glistening under the blood moon.',
-    tags: ['Rose', 'Atmosphere', 'PNG'],
-  },
-  {
-    id: 'photo-4',
-    title: 'Cathedral Shadows & Obsidian Arch',
-    artist: 'Gothic Architecture',
-    url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
-    caption: 'Ancient ruins lit by eerie celestial magenta lanterns.',
-    tags: ['Cathedral', 'Aesthetic'],
-  },
-  {
-    id: 'photo-5',
-    title: 'Midnight Fog in Crimson Woods',
-    artist: 'Darkwave Aesthetic',
-    url: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1200&q=80',
-    caption: 'The twilight path leading deeper into Noctis Sanctuary.',
-    tags: ['Forest', 'Darkness'],
-  },
-  {
-    id: 'photo-6',
-    title: 'Vampiric Crystal & Thorns',
-    artist: '@vespera.goth',
-    url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80',
-    caption: 'Glowing dark crystals harboring shadow magic.',
-    tags: ['Crystal', 'Magic'],
   },
 ];
 
 // Helper to normalize strings or objects into GalleryPhoto format
 export const GALLERY_PHOTOS: GalleryPhoto[] = GALLERY_PHOTOS_RAW.map((item, index) => {
   if (typeof item === 'string') {
-    // Generate clean title from filename
-    const filename = item.split('/').pop()?.split('.')[0]?.replace(/[-_]/g, ' ') || `Photo ${index + 1}`;
+    let filename = `Photo ${index + 1}`;
+    if (item.startsWith('/') || item.startsWith('http')) {
+      const segments = item.split('/');
+      const lastSegment = segments[segments.length - 1]?.split('?')[0];
+      if (lastSegment && lastSegment.includes('.')) {
+        filename = lastSegment.split('.')[0].replace(/[-_]/g, ' ');
+      }
+    }
     const capitalizedTitle = filename.charAt(0).toUpperCase() + filename.slice(1);
     return {
       id: `photo-item-${index + 1}`,
       title: capitalizedTitle,
-      artist: '@vespera.goth',
+      artist: '@juno.quinn_',
       url: item,
-      caption: `Art piece from /public/images/ (${item})`,
+      caption: `Art piece from collection (${item})`,
       tags: ['Gallery', item.endsWith('.png') ? 'PNG' : 'Photo'],
     };
   }
@@ -231,6 +190,6 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = GALLERY_PHOTOS_RAW.map((item, inde
     ...item,
     id: item.id || `photo-item-${index + 1}`,
     title: item.title || `Photo ${index + 1}`,
-    artist: item.artist || '@vespera.goth',
+    artist: item.artist || '@juno.quinn_',
   };
 });
